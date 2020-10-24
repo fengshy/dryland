@@ -1,10 +1,9 @@
-rm(list = ls())
-gc()
 library(ncdf4)
 library(sp)
 library(rgdal)
 library(plyr)
 library(fields)
+
 dem <- readGDAL('E:/SyResearch/1.Attribution of global dryland areas/dem/dem_global_gtopo30.tif')
 coord <- coordinates(dem)            # fetch the lonlat of tif
 lon <- unique(coord[,1])             # get the unique
@@ -22,7 +21,6 @@ image(Z)
 save(Z, file = 'E:/SyResearch/1.Attribution of global dryland areas/output data/Z_0.5.RData')
 lat <- dem_z$y
 Mon <- rep(1:12, each = 69)
-
 
 {
   load("E:/SyResearch/1.Attribution of global dryland areas/output data/month_dswrf_Princeton.RData")
@@ -45,16 +43,17 @@ Mon <- aperm(Mon, c(3,1,2))
 #i <- 1
 # PET <- Penman_history(Tmin =  tmin[[i]] - 273.16, Tmax = tmax[[i]]- 273.16,  WS = wind[[i]], SHum = shum[[i]],
 #                       Rs = dswrf[[i]], Mon = Mon, Z = Z, lat = Lat)
-library(plyr)
-PET <- laply(1, function(i){
-
-  PET <- Penman_history_2(Tmin =  tmin[[i]] - 273.16, Tmax = tmax[[i]]- 273.16,
+# PET <- laply(1, function(i){
+  PET <- Penman_history(Tmin =  tmin[[i]] - 273.16, Tmax = tmax[[i]]- 273.16,
                         Rs = dswrf[[i]]*24*60*60/1e6,
                         WS = wind[[i]], SHum = shum[[i]],
-                           Mon = Mon, Z = Z, lat = Lat)
-  PET
-}, .progress = 'text')
-
-
-
-attr(PET,'dimnames') <- NULL
+                        Mon = Mon, Z = Z, lat = Lat)
+  {
+    x = PET[1,,]
+    #x[x < 0] = NA
+    levelplot(x*365)
+    #levelplot(dswrf[[i]][1,,]*365*24*60*60/1e6)
+  }
+  # PET
+# }, .progress = 'text')
+# attr(PET,'dimnames') <- NULL
