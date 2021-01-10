@@ -17,6 +17,7 @@ Penman_hist <- function(Tmin, Tmax, WS, SHum, Rs = NULL, Mon, Z, lat){
   Tm <- (Tmin + Tmax)/2
   # 1. Calculate Ra
   j <- (Mon-1)*30+ 15
+  #j <- i if cal daily,delete line19 and take line 20 in function(),delete Mon
   Gsc <- 0.0820
   dr <- 1+0.033*cos(2*pi/365*j)
   x <- pi/180*lat
